@@ -1,0 +1,76 @@
+@Library('pfPipeline@tags/4') _
+
+def BUILD_SLAVE_IMG = 'devpico-pfc.dev.echonet:8083/bnpp-pf/build-slave:1.7'
+def BUILD_PYTHON_IMG = 'devpico-pfc.dev.echonet:8083/bnpp-pf/python:1.6'
+
+def TEST_ROBOT_IMG = 'devpico-pfc.dev.echonet:8083/bnpp-pf/robot-framework:1.0'
+def TEST_BROWSER = 'chrome'
+
+pipeline {
+	agent {
+		label 'linux'
+	}
+
+	options {
+		// the gitlab connection to use with admpico token 
+        gitLabConnection('git-pfc.rb.echonet')
+        disableConcurrentBuilds()
+        buildDiscarder(logRotator(numToKeepStr: '5', artifactNumToKeepStr: '5'))
+        timeout(time: 1, unit: 'HOURS')
+		ansiColor('xterm')
+	}
+	
+	triggers {
+		// nigthly builds (only on master)
+		//cron(BRANCH_NAME == 'master' ? 'H H(0-7) * * *' : '')
+		// start build on gitlab push (need good configuration in gitlab for the project)
+		gitlab(
+			triggerOnPush: true
+		)
+	}
+	
+
+    stages {
+
+			stage('Request Oracle Database ') {
+				agent {
+						dockerfile { 
+							filename "${WORKSPACE}/Dockerfile"
+							reuseNode true
+						}
+				}
+
+				steps {
+					sh "cd ${WORKSPACE}"
+					sh "pipenv install"
+					sh "pipenv run python ${WORKSPACE}/sqlRequest.py"
+				}
+			}
+
+			stage('Automated tests') {
+				agent {
+    				docker { 
+    						label 'linux'
+    						image "${TEST_ROBOT_IMG}"
+    						args "-e BROWSER=${TEST_BROWSER}"
+							reuseNode true
+    					}
+			    }
+
+				steps {
+					//sh "cat ${WORKSPACE}/allProductsTests/config.py"
+					sh "run-tests.sh ${WORKSPACE}/reports-allProducts ${WORKSPACE}/allProductsTests || true"
+					robot otherFiles: '*.png', outputPath: "${WORKSPACE}/reports-allProducts",passThreshold : 100, unstableThreshold: 95.0
+				}
+
+			}
+
+    }
+
+	post {
+
+		always {
+			pfSendNotification(alwaysSend : true, to : 'oumar.kouferidji@externe.bnpparibas.com');
+		}
+	}
+}

@@ -1,2 +1,1 @@
-# devops-test-auto
-Test Automation
+Automated Testing Previs Project (With Robot Framework)

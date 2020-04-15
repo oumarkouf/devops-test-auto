@@ -1,0 +1,10 @@
+[[source]]
+url = "http://devpico-pfc.dev.echonet/nexus3/repository/pypi-pf/simple"
+verify_ssl = false
+name = "devpico"
+
+[packages]
+cx-Oracle = "==7.3.0"
+
+[requires]
+python_version = "3"
