@@ -5,6 +5,10 @@ Documentation     A test suite with a single test for Claim Declaration for All 
 ...               the imported resource file.
 Resource          tu_test.robot
 
+#*** Variables ***
+#@{SUCCESS}      SP  PB  GHOSPI
+#without PVQ
+
 *** Test Cases ***
 Declaration Sinistre
     Open Browser To Login Page

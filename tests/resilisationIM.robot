@@ -9,8 +9,7 @@ Resource          tu_test.robot
 
 *** Test Cases ***
 Resiliation Immediate Police
-    Go To       ${LOGIN URL}  
-    Click on Recherche
+    Go To       ${RECHERCHE URL}
     Type the policyId   ${POLICY RI}
     Launch Police Recherche
     Detail Police       ${POLICY RI}

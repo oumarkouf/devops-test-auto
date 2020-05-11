@@ -13,11 +13,14 @@ ${VALID USER}     testPF
 ${VALID PASSWORD}   test
 ${PREVIS URL}     http://${SERVER}/group/previs
 ${LOGIN URL}      ${PREVIS URL}/accueil
+${RECHERCHE URL}    ${PREVIS URL}/recherche
 ${Policies}       ${allPolicies}
+${PoliciesDS}               ${allPoliciesDS}
 ${PoliciesTerminated}       ${allPoliciesTerminated}
+${PoliciesTDelayed}         ${allPoliciesTD}
 ${PoliciesUnpaid}           ${allPoliciesUnpaid}
-*** Keywords ***
 
+*** Keywords ***
 Open Browser To Login Page
     Open Browser    ${LOGIN URL}    ${BROWSER}
     Title Should Be    Accueil - Previs
@@ -57,49 +60,55 @@ Detail Police
 Click Resiliation
     Sleep   2s
     Mouse Over      xpath=//*[@id="_AfterSalesPortlet_WAR_previsafterSalesPortlet_:form:tabPanelPolicyProduct:j_idt11"]/ul/li[2]
-    Click Element   xpath=//*[@id="_AfterSalesPortlet_WAR_previsafterSalesPortlet_:form:tabPanelPolicyProduct:j_idt11"]/ul/li[2]/ul/li[1]/a
+    Click Element   xpath=//*[@id="_AfterSalesPortlet_WAR_previsafterSalesPortlet_:form:tabPanelPolicyProduct:j_idt11"]/ul/li[2]/ul/li[1]
 
-Click Annulation Resiliation
-    Sleep   2s
-    Mouse Over      xpath=//*[@id="_AfterSalesPortlet_WAR_previsafterSalesPortlet_:form:tabPanelPolicyProduct:j_idt11"]/ul/li[2]
-    Click Element   xpath=//*[@id="_AfterSalesPortlet_WAR_previsafterSalesPortlet_:form:tabPanelPolicyProduct:j_idt11"]/ul/li[2]/ul/li[4]/a
-    #//*[@id="_AfterSalesPortlet_WAR_previsafterSalesPortlet_:form:tabPanelPolicyProduct:j_idt11"]/ul/li[2]/ul/li[4]/a
+Lancer Annulation Resiliation Differee
+    [Arguments]      ${police}
+    Sleep   1s
+    Click Element   //*[@id="_AfterSalesPortlet_WAR_previsafterSalesPortlet_:form:tabPanelPolicyProduct"]/ul/li[3]
+    Click Element    css=.ui-button-icon-left
+    Click Button    _AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt936:j_idt943
+    Element Text Should Be     css=.ui-messages-info    L'annulation de la résiliation sur la police [${police}] a été effectué
+    Element Text Should Be     _PolicySynthesisPortlet_WAR_previspolicySynthesisPortlet_:form1:statePolCustomized      Active
+    Element Text Should Be     _PolicySynthesisPortlet_WAR_previspolicySynthesisPortlet_:form1:statutPolCustomized     Normal
 
 Lancer Annulation Impaye
     [Arguments]      ${police}
     Sleep   2s
     Mouse Over      xpath=//*[@id="_AfterSalesPortlet_WAR_previsafterSalesPortlet_:form:tabPanelPolicyProduct:j_idt11"]/ul/li[2]
-    Click Element   xpath=//*[@id="_AfterSalesPortlet_WAR_previsafterSalesPortlet_:form:tabPanelPolicyProduct:j_idt11"]/ul/li[2]/ul/li[3]/a   
-    Click Button    _AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt894:j_idt901
+    Click Element   xpath=//*[@id="_AfterSalesPortlet_WAR_previsafterSalesPortlet_:form:tabPanelPolicyProduct:j_idt11"]/ul/li[2]/ul/li[3]   
+    Click Button    _AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt904:j_idt911
     Element Text Should Be     css=.ui-messages-info    La mise en impayé a été annulée pour la police [${police}]
-
+    Click Element   //*[@id="_AfterSalesPortlet_WAR_previsafterSalesPortlet_:form:tabPanelPolicyProduct"]/ul/li[3]
+    Element Text Should Be    _AfterSalesPortlet_WAR_previsafterSalesPortlet_:form:tabPanelPolicyProduct:j_idt205:1:j_idt218    Annulé
 
 Lancer Résiliation Immediate
-    Click Element    //*[@id="_AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt517:reason"]
-    Click Element    _AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt517:reason_1
-    Click Button     _AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt517:j_idt537
-
+    Click Element    //*[@id="_AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt527:reason_label"]
+    Click Element    _AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt527:reason_1
+    Click Button     _AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt527:j_idt547
 
 Input Date
     ${CurrentDate}    Get Current Date
     ${newDate}=       Add Time To Date    ${CurrentDate}    2 days  result_format=%d/%m/%Y
-    Execute Javascript           document.getElementById('_AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt517:dateDeffet_input').value ='${newDate}'
-
+    Execute Javascript           document.getElementById('_AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt527:dateDeffet_input').value ='${newDate}'
 
 Lancer Résiliation Differee
-    Click Element     //*[@id="_AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt517:reason"]
-    Click Element     _AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt517:reason_1
+    Click Element    //*[@id="_AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt527:reason_label"]
+    Click Element    _AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt527:reason_1
     Input Date
-    Click Button      _AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt517:j_idt537
+    Click Button     _AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt527:j_idt547
 
 Lancer Annulation Resiliation
     [Arguments]      ${police}
-    Click Button    _AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt914:j_idt921
+    Sleep   2s
+    Mouse Over      xpath=//*[@id="_AfterSalesPortlet_WAR_previsafterSalesPortlet_:form:tabPanelPolicyProduct:j_idt11"]/ul/li[2]
+    Click Element   xpath=//*[@id="_AfterSalesPortlet_WAR_previsafterSalesPortlet_:form:tabPanelPolicyProduct:j_idt11"]/ul/li[2]/ul/li[4]/a
+    Click Button    _AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt924:j_idt931
     Element Text Should Be     css=.ui-messages-info    La résiliation a été annulée pour la police [${police}]
 
 
 Resiliation Verifications
-    [Arguments]      ${police}      ${type}
+    [Arguments]      ${police}
     Element Should Contain     //*[@id="_AfterSalesPortlet_WAR_previsafterSalesPortlet_:form:messages"]/div/ul/li/span    a été résiliée
     Element Text Should Be     css=.ui-messages-info      La police [${police}] a été résiliée
     #cliquer sur avenants 
@@ -107,33 +116,33 @@ Resiliation Verifications
     #Click Element       //*[@id="_AfterSalesPortlet_WAR_previsafterSalesPortlet_:form:tabPanelPolicyProduct"]/ul/li[2]
     #Capture Page Screenshot       resiliation-${type}-avenants.png 
     #cliquer sur évenements
-    Sleep   1s
-    Click Element      //*[@id="_AfterSalesPortlet_WAR_previsafterSalesPortlet_:form:tabPanelPolicyProduct"]/ul/li[3]
-    Capture Page Screenshot       resiliation-${type}-evenements.png 
+    #Sleep   1s
+    #Click Element      //*[@id="_AfterSalesPortlet_WAR_previsafterSalesPortlet_:form:tabPanelPolicyProduct"]/ul/li[3]
+    #Capture Page Screenshot       resiliation-${type}-evenements.png 
 
 Declarer Sinistre
     [Arguments]      ${police}
-    Sleep   2s
-    Click Element   //*[@id="_AfterSalesPortlet_WAR_previsafterSalesPortlet_:form:tabPanelPolicyProduct"]/ul/li[6] 
-    Click Button    _AfterSalesPortlet_WAR_previsafterSalesPortlet_:form:tabPanelPolicyProduct:j_idt463
-    Click Button    _AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt714:j_idt757
+    Sleep   1s
+    Click Element   //*[@id="_AfterSalesPortlet_WAR_previsafterSalesPortlet_:form:tabPanelPolicyProduct"]/ul/li[7] 
+    Click Button    _AfterSalesPortlet_WAR_previsafterSalesPortlet_:form:tabPanelPolicyProduct:j_idt473
+    Click Button    _AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt724:j_idt767
     #choose Guarantee
-    Sleep   2s
-    Click Element   id=_AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt714:idGuarant_label
-    Click Element   _AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt714:idGuarant_1
+    #Sleep   1s
+    Click Element   id=_AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt724:idGuarant_label
+    Click Element   _AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt724:idGuarant_1
     #choose Insurer
-    Sleep   2s
-    Click Element   //*[@id="_AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt714:idInsurer_label"]
-    Click Element   _AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt714:idInsurer_1
+    #Sleep   1s
+    Click Element   _AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt724:idInsurer_label
+    Click Element   _AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt724:idInsurer_1
     #choose Reason or Motif
-    Sleep   2s
-    Click Element   _AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt714:idRes_label
-    Click Element   _AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt714:idRes_1
+    #Sleep   1s
+    Click Element   _AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt724:idRes_label
+    Click Element   _AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt724:idRes_1
     #Enter Adress
-    Input Text      _AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt714:idStreet       Rue de Paris
-    Input Text      _AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt714:idZipCode      75000
-    Input Text      _AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt714:idCity         Paris
+    Input Text      _AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt724:idStreet       Rue de Paris
+    Input Text      _AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt724:idZipCode      75000
+    Input Text      _AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt724:idCity         Paris
     #Validation
-    Click Button    _AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt714:j_idt757
+    Click Button    _AfterSalesPortlet_WAR_previsafterSalesPortlet_:j_idt724:j_idt767
     Element Should Contain     _AfterSalesPortlet_WAR_previsafterSalesPortlet_:form:messages        Un sinistre a été créé
     Element Text Should Be     css=.ui-messages-info        Un sinistre a été créé pour la police [${police}]

@@ -5,6 +5,9 @@ Documentation     A test suite with a single test for Cancel Termination for ALL
 ...               the imported resource file.
 Resource          tu_test.robot
 
+#*** Variables ***
+#@{SUCCESS}      GTM  SP  PVQ  PB  GHOSPI  RNM  ASSIS  CA  ATC  AAC  SAC  TVI  AJ  PVGA
+
 *** Test Cases ***
 Annulation Resiliation All Products
     :FOR    ${product}     ${policy}    IN ZIP    ${PoliciesTerminated.keys()}    ${PoliciesTerminated.values()}

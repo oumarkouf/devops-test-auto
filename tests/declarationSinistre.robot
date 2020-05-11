@@ -20,4 +20,3 @@ Declaration Sinistre
     Detail Police       ${POLICY DS}
     Declarer Sinistre   ${POLICY DS}
     Capture Page Screenshot     declarationSinistre.png
-    #Delete All Cookies
